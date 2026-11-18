@@ -1,0 +1,13 @@
+{
+  "image_type": "checkerboard",
+  "image_size": 4,
+  "intensity_representation": "normalized",
+  "encoding_method": "amplitude",
+  "circuit_type": "basic",
+  "shots": 1000,
+  "noise_model": "depolarizing",
+  "noise_probability": 0.05,
+  "seed": 42,
+  "experiment_id": "noise_depolarizing_5pct",
+  "description": "Noise experiment: 5% depolarizing"
+}

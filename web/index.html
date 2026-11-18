@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QIP-Bench</title>
+  <meta name="description" content="Empirical performance-factor analysis for quantum image processing (FRQI, NEQR, QPIE, QHED).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/quantum.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<canvas id="qbg" aria-hidden="true"></canvas>
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="16" cy="16" r="4" fill="currentColor"/><ellipse cx="16" cy="16" rx="13" ry="5" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16" cy="16" rx="13" ry="5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="13" ry="5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(120 16 16)"/></svg>
+    <div><strong>QIP-Bench</strong><span>Quantum Image Processing Performance Lab</span></div>
+  </div>
+  <nav id="tabs">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lab">Quantum Lab</button>
+    <button data-tab="compare">Compare Encodings</button>
+    <button data-tab="edges">Edge Detection</button>
+    <button data-tab="research">Research Explorer</button>
+    <button data-tab="method">Methodology</button>
+  </nav>
+  <button id="theme" class="ghost" title="Toggle theme" aria-label="Toggle theme">◐</button>
+</header>
+
+<main>
+<!-- ================================================================ OVERVIEW -->
+<section id="overview" class="tab active">
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow"><span class="pulse-dot"></span>Research question · CSE3728 Problem 9</p>
+      <h1>What really determines the performance of a <span class="shimmer">quantum image-processing</span> system?</h1>
+      <p class="lead">Image size, intensity representation, preprocessing, circuit structure, number of operations,
+        measurement and reconstruction were varied in controlled experiments on Qiskit Aer. QIP-Bench measures
+        each one's influence on <b>quality</b>, <b>efficiency</b> and <b>reliability</b>.</p>
+      <div class="hero-cta">
+        <button class="primary" data-goto="lab">Run a quantum pipeline →</button>
+        <button class="ghost outline" data-goto="research">Explore the results</button>
+      </div>
+      <svg class="hero-circuit" viewBox="0 0 520 132" aria-label="Animated FRQI circuit">
+        <g class="wires">
+          <line x1="28" y1="22" x2="510" y2="22"/><line x1="28" y1="56" x2="510" y2="56"/>
+          <line x1="28" y1="90" x2="510" y2="90"/><line x1="28" y1="124" x2="510" y2="124"/>
+        </g>
+        <g class="lbl"><text x="0" y="26">q₀</text><text x="0" y="60">q₁</text><text x="0" y="94">q₂</text><text x="0" y="128">c</text></g>
+        <g class="gate g1"><rect x="52" y="10" width="26" height="24" rx="5"/><text x="65" y="27">H</text></g>
+        <g class="gate g1"><rect x="52" y="44" width="26" height="24" rx="5"/><text x="65" y="61">H</text></g>
+        <g class="gate g1"><rect x="52" y="78" width="26" height="24" rx="5"/><text x="65" y="95">H</text></g>
+        <g class="gate g2"><rect x="120" y="112" width="44" height="24" rx="5"/><text x="142" y="129">Ry</text></g>
+        <g class="ctrl g3"><line x1="200" y1="22" x2="200" y2="124"/><circle cx="200" cy="22" r="5"/><circle class="tgt" cx="200" cy="124" r="9"/></g>
+        <g class="gate g4"><rect x="236" y="112" width="44" height="24" rx="5"/><text x="258" y="129">Ry</text></g>
+        <g class="ctrl g5"><line x1="316" y1="56" x2="316" y2="124"/><circle cx="316" cy="56" r="5"/><circle class="tgt" cx="316" cy="124" r="9"/></g>
+        <g class="gate g6"><rect x="352" y="112" width="44" height="24" rx="5"/><text x="374" y="129">Ry</text></g>
+        <g class="ctrl g7"><line x1="432" y1="90" x2="432" y2="124"/><circle cx="432" cy="90" r="5"/><circle class="tgt" cx="432" cy="124" r="9"/></g>
+        <g class="gate meas g8"><rect x="470" y="10" width="30" height="126" rx="6"/><path d="M477 80 q8 -14 16 0" /><line x1="485" y1="80" x2="493" y2="68"/></g>
+        <g class="pulses"><circle r="4" cy="22"/><circle r="4" cy="56"/><circle r="4" cy="90"/><circle r="4" cy="124"/></g>
+      </svg>
+    </div>
+    <div class="hero-bloch">
+      <canvas id="hero-bloch"></canvas>
+      <p class="muted small center">A qubit in superposition: drag to rotate the Bloch sphere</p>
+    </div>
+  </div>
+  <div id="kpis" class="kpis"></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <h3>Factor influence ranking</h3>
+        <div class="seg" id="rank-enc"><button data-v="frqi" class="on">FRQI</button><button data-v="neqr">NEQR</button></div>
+        <div class="seg" id="rank-dim"><button data-v="quality" class="on">Quality</button><button data-v="efficiency">Efficiency</button><button data-v="reliability">Reliability</button><button data-v="runtime">Runtime</button></div>
+      </div>
+      <p class="muted small">Share of variance explained by each factor's main effect in a full 2<sup>7</sup> factorial design (hatched = not significant at p &lt; 0.05).</p>
+      <div class="chart-box"><canvas id="rank-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Key findings</h3>
+      <ol id="findings" class="findings"><li class="muted">Run <code>python -m qipbench run</code> to generate findings.</li></ol>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Business takeaway</h3>
+    <div class="grid-3 takeaways">
+      <div><h4>Engineer the circuit first</h4><p>Decomposition choices change CNOT counts by an order of magnitude for the <em>same</em> quantum state. That is the cheapest performance win before any hardware spend.</p></div>
+      <div><h4>Budget measurements, not just qubits</h4><p>Qubit count alone misleads. FRQI is qubit-cheap but its quality is shot-limited, while NEQR needs more qubits and gates but reads out exactly.</p></div>
+      <div><h4>Match encoding to the noise regime</h4><p>Basis encoding (NEQR) is robust until a noise threshold and then collapses. Angle encoding (FRQI) degrades gracefully. Choose by device error rate.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ LAB -->
+<section id="lab" class="tab">
+  <div class="grid-side">
+    <form id="lab-form" class="card controls">
+      <h3>Pipeline configuration</h3>
+      <fieldset><legend>Input</legend>
+        <label>Test image <select name="image" class="image-select"></select></label>
+        <label class="file">…or upload your own <input type="file" name="file" accept="image/*"></label>
+      </fieldset>
+      <fieldset><legend>1 · Classical preprocessing</legend>
+        <label>Size <select name="size"><option>2</option><option selected>4</option><option>8</option><option>16</option><option>32</option></select></label>
+        <label>Bit depth <select name="bit_depth"><option>1</option><option>2</option><option>4</option><option>6</option><option selected>8</option></select></label>
+        <label>Interpolation <select name="interpolation"><option>nearest</option><option>bilinear</option><option>bicubic</option><option selected>area</option></select></label>
+        <label>Normalisation <select name="normalization"><option>none</option><option selected>minmax</option><option>equalize</option></select></label>
+      </fieldset>
+      <fieldset><legend>2 · Quantum encoding &amp; operations</legend>
+        <label>Encoding <select name="encoding"><option value="frqi">FRQI</option><option value="neqr">NEQR</option><option value="amplitude">Amplitude (QPIE)</option></select></label>
+        <label>Circuit structure <select name="structure"><option>optimized</option><option>baseline</option></select></label>
+        <label>Transpiler level <select name="opt_level"><option>0</option><option selected>1</option><option>2</option><option>3</option></select></label>
+        <label>Inversion stages <input type="number" name="operations" value="0" min="0" max="16"></label>
+      </fieldset>
+      <fieldset><legend>3 · Measurement &amp; reconstruction</legend>
+        <label>Shots (0 = exact) <select name="shots"><option>64</option><option>256</option><option>1024</option><option selected>4096</option><option>16384</option><option value="0">exact</option></select></label>
+        <label>Noise p <select name="noise"><option value="0">0 (ideal)</option><option>0.0001</option><option>0.0003</option><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+        <label>Estimator <select name="estimator"><option value="auto">default</option><option>conditional</option><option>marginal</option><option>majority</option><option>mean</option></select></label>
+        <label>Missing-pixel fill <select name="fill"><option>neighbor</option><option>zero</option></select></label>
+      </fieldset>
+      <button type="submit" class="primary">Run quantum pipeline</button>
+      <p class="hint muted small">Noisy runs are limited to 12 qubits in the live lab (for example NEQR 4×4 at ≤ 4 bits).</p>
+    </form>
+    <div>
+      <div id="lab-error" class="alert" hidden></div>
+      <ol id="lab-stages" class="stages">
+        <li>Preprocess</li><li>Encode</li><li>Transpile</li><li>Simulate</li><li>Measure</li><li>Reconstruct</li>
+      </ol>
+      <div class="card">
+        <div class="pipeline-strip">
+          <figure><img id="img-source" alt=""><figcaption>Source</figcaption></figure>
+          <span class="arrow">→</span>
+          <figure><img id="img-pre" alt=""><figcaption>Preprocessed (loaded)</figcaption></figure>
+          <span class="arrow">→</span>
+          <figure><img id="img-expected" alt=""><figcaption>Expected output</figcaption></figure>
+          <span class="arrow">vs</span>
+          <figure><img id="img-recon" alt=""><figcaption>Quantum reconstruction</figcaption></figure>
+          <figure><img id="img-error" alt=""><figcaption>|Error| map</figcaption></figure>
+        </div>
+      </div>
+      <div id="lab-metrics" class="kpis small-kpis"></div>
+      <div class="grid-2 even">
+        <div class="card">
+          <div class="card-head"><h3>Wavefunction collapse, live</h3><button id="replay" class="ghost outline small-btn" type="button">↻ Replay shots</button></div>
+          <p class="muted small">Every measurement collapses the register to one basis state. Watch the image emerge as the shots accumulate. Pulsing cells have not been observed yet.</p>
+          <div class="replay">
+            <canvas id="replay-img" class="pixel-canvas"></canvas>
+            <canvas id="replay-hist"></canvas>
+          </div>
+          <p id="replay-count" class="mono small muted">–</p>
+        </div>
+        <div class="card">
+          <h3>Qubit explorer</h3>
+          <p class="muted small">Hover a pixel of the loaded image to see the quantum state that stores it.</p>
+          <div class="explorer">
+            <canvas id="explorer-img" class="pixel-canvas"></canvas>
+            <canvas id="explorer-bloch"></canvas>
+          </div>
+          <div id="explorer-state" class="state-readout mono"></div>
+        </div>
+      </div>
+      <div class="card"><h3>Logical circuit</h3><pre id="lab-circuit" class="circuit muted">Run a configuration to see its circuit.</pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ COMPARE -->
+<section id="compare" class="tab">
+  <form id="cmp-form" class="card toolbar">
+    <label>Image <select name="image" class="image-select"></select></label>
+    <label>Upload <input type="file" name="file" accept="image/*"></label>
+    <label>Size <select name="size"><option>2</option><option selected>4</option><option>8</option></select></label>
+    <label>Bit depth <select name="bit_depth"><option>2</option><option selected>4</option><option>8</option></select></label>
+    <label>Shots <select name="shots"><option>256</option><option>1024</option><option selected>4096</option><option value="0">exact</option></select></label>
+    <label>Noise p <select name="noise"><option value="0">0</option><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label>Structure <select name="structure"><option>optimized</option><option>baseline</option></select></label>
+    <button class="primary" type="submit">Compare</button>
+  </form>
+  <div id="cmp-error" class="alert" hidden></div>
+  <div id="cmp-out" class="grid-4"></div>
+  <div class="card"><h3>Resource vs quality</h3><div class="table-wrap"><table id="cmp-table"></table></div></div>
+</section>
+
+<!-- ================================================================ EDGES -->
+<section id="edges" class="tab">
+  <form id="edge-form" class="card toolbar">
+    <label>Image <select name="image" class="image-select"></select></label>
+    <label>Upload <input type="file" name="file" accept="image/*"></label>
+    <label>Size <select name="size"><option>4</option><option>8</option><option selected>16</option><option>32</option></select></label>
+    <label>Shots <select name="shots"><option>256</option><option>1024</option><option>4096</option><option selected>16384</option><option>65536</option><option value="0">exact</option></select></label>
+    <label>Noise p <select name="noise"><option value="0">0</option><option>0.0001</option><option>0.001</option><option>0.003</option></select></label>
+    <label>Threshold <input type="number" name="threshold" value="0.2" step="any" min="0.01" max="1"></label>
+    <button class="primary" type="submit">Detect edges</button>
+  </form>
+  <div id="edge-error" class="alert" hidden></div>
+  <div class="card">
+    <p class="muted small">Quantum Hadamard Edge Detection (Yao et al., 2017): amplitude-encode the image, add one ancilla, apply H · decrement · H.
+      Odd basis states then carry the neighbour differences (c<sub>i</sub> − c<sub>i+1</sub>)/2. It runs twice, once on the image and once on its transpose.</p>
+    <div class="edge-grid" id="edge-imgs"></div>
+  </div>
+  <div id="edge-metrics" class="kpis small-kpis"></div>
+</section>
+
+<!-- ================================================================ RESEARCH -->
+<section id="research" class="tab">
+  <div class="card">
+    <div class="card-head">
+      <h3>One-factor-at-a-time response curves</h3>
+      <label>Factor <select id="study-select"></select></label>
+      <label>Metric <select id="metric-select">
+        <option value="psnr">PSNR vs expected (dB)</option><option value="ssim">SSIM</option>
+        <option value="e2e_psnr">End-to-end PSNR (dB)</option><option value="success">Success rate</option>
+        <option value="coverage">Pixel coverage</option><option value="fidelity">Distribution fidelity</option>
+        <option value="cx">CNOT count</option><option value="depth">Circuit depth</option>
+        <option value="qubits">Qubits</option><option value="total_s">Runtime (s)</option><option value="psnr_sd">PSNR std (reliability)</option>
+      </select></label>
+    </div>
+    <p id="study-question" class="muted"></p>
+    <div class="chart-box tall"><canvas id="study-chart"></canvas></div>
+    <details><summary>Table view</summary><div class="table-wrap"><table id="study-table"></table></div></details>
+  </div>
+  <div class="card">
+    <h3>Generated figures</h3>
+    <div id="gallery" class="gallery"></div>
+  </div>
+</section>
+
+<!-- ================================================================ METHOD -->
+<section id="method" class="tab">
+  <div class="card">
+    <h3>Pipeline under test</h3>
+    <div class="flow animated">
+      <div><b>Source image</b><span>photo, phantom, synthetic or upload</span></div>
+      <div><b>Preprocess</b><span>resize · normalise · quantise</span></div>
+      <div><b>Encode</b><span>FRQI · NEQR · QPIE</span></div>
+      <div><b>Operate</b><span>inversion stages · QHED</span></div>
+      <div><b>Measure</b><span>shots · noise</span></div>
+      <div><b>Reconstruct</b><span>estimator · fill</span></div>
+      <div><b>Evaluate</b><span>quality · efficiency · reliability</span></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card"><h3>FRQI</h3><p class="formula">|I⟩ = 1/√N Σ<sub>i</sub> (cos θ<sub>i</sub>|0⟩ + sin θ<sub>i</sub>|1⟩) ⊗ |i⟩<br>θ<sub>i</sub> = (π/2)·I<sub>i</sub></p>
+      <p>2n+1 qubits for a 2<sup>n</sup>×2<sup>n</sup> image. The optimized structure uses a Gray-code uniformly controlled R<sub>Y</sub> with exactly 2<sup>2n</sup> CNOTs.
+        Decoding: θ = arcsin √P(1|i).</p></div>
+    <div class="card"><h3>NEQR</h3><p class="formula">|I⟩ = 1/√N Σ<sub>i</sub> |C<sub>i</sub>⟩ ⊗ |i⟩<br>C<sub>i</sub> ∈ {0,1}<sup>q</sup></p>
+      <p>2n+q qubits. Grey levels are basis states, so one observation per pixel reads them exactly. The optimized structure shares X-flips in Gray order and uses one ancilla per pixel condition.</p></div>
+    <div class="card"><h3>Amplitude / QHED</h3><p class="formula">|I⟩ = Σ<sub>i</sub> c<sub>i</sub>|i⟩, c<sub>i</sub> = I<sub>i</sub>/‖I‖</p>
+      <p>Only 2n qubits, but the norm is classical side-information. QHED adds one ancilla and reads every neighbour difference from the odd basis states.</p></div>
+  </div>
+  <div class="card">
+    <h3>Factors and responses</h3>
+    <div class="table-wrap"><table class="plain">
+      <thead><tr><th>Factor</th><th>Levels studied</th><th>Why it might matter</th></tr></thead>
+      <tbody>
+        <tr><td>Image size</td><td>2, 4, 8, 16 (32 for QHED)</td><td>Position qubits, gate count and shots per pixel</td></tr>
+        <tr><td>Intensity bit depth</td><td>1 – 8 bits</td><td>NEQR colour qubits; FRQI quantisation</td></tr>
+        <tr><td>Preprocessing</td><td>nearest / bilinear / bicubic / area; none / min-max / equalise</td><td>Information kept before encoding</td></tr>
+        <tr><td>Circuit structure</td><td>baseline vs optimized decomposition; transpiler 0–3</td><td>Depth and CNOTs for an identical state</td></tr>
+        <tr><td>Number of operations</td><td>0 – 8 inversion stages</td><td>Error accumulation per processing step</td></tr>
+        <tr><td>Measurement</td><td>64 – 16 384 shots, exact</td><td>Statistical estimation error and coverage</td></tr>
+        <tr><td>Hardware noise</td><td>p = 0 – 10<sup>−2</sup></td><td>Depolarising gates and readout error</td></tr>
+        <tr><td>Reconstruction</td><td>conditional / marginal; majority / mean; fill</td><td>Classical post-processing of counts</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted small">Responses: PSNR, SSIM and exact-level accuracy against the classically expected image; end-to-end PSNR against the source; Bhattacharyya fidelity; coverage;
+      qubits, CNOTs and depth after transpiling to {rz, sx, x, cx}; wall-clock time; run-to-run PSNR spread across seeds.</p>
+  </div>
+</section>
+</main>
+<footer>QIP-Bench · Qiskit + Aer · BML Munjal University · CSE3728 Quantum Image Processing &amp; Emerging Visual Computing</footer>
+<script src="/static/quantum.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

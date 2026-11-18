@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Vision Lab - Sci-Fi Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #0d1220;
+            --bg-card: #111827;
+            --accent-violet: #8B5CF6;
+            --accent-cyan: #22D3EE;
+            --accent-green: #A3E635;
+            --accent-pink: #ec4899;
+            --text-primary: #F3F4F6;
+            --text-secondary: #94A3B8;
+            --border-color: #263247;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: glow-pulse 2s infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { text-shadow: 0 0 10px var(--accent-cyan); }
+            50% { text-shadow: 0 0 20px var(--accent-cyan), 0 0 30px var(--accent-violet); }
+        }
+
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--text-primary);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .nav-item.active {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-cyan);
+            border-left-color: var(--accent-cyan);
+            box-shadow: inset 0 0 10px rgba(34, 211, 238, 0.2);
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        .content-area::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(0deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-shift 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes grid-shift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .page-section {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-cyan));
+            color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(34, 211, 238, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, transparent 100%);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2), inset 0 0 20px rgba(139, 92, 246, 0.1);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: rgba(17, 24, 39, 0.7);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(from 0deg, var(--accent-violet), var(--accent-cyan), var(--accent-violet));
+            animation: rotate 3s linear infinite;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .kpi-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .upload-area {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px dashed var(--accent-violet);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Sci-Fi Processing Animation */
+        .processing-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.95);
+            z-index: 200;
+            backdrop-filter: blur(5px);
+        }
+
+        .processing-container.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .processing-content {
+            text-align: center;
+            position: relative;
+        }
+
+        /* Quantum Orbit Animation */
+        .quantum-orbit {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+
+        .orbit-1 {
+            border-color: rgba(139, 92, 246, 0.3);
+            animation: orbit-spin 8s linear infinite;
+        }
+
+        .orbit-2 {
+            border-color: rgba(34, 211, 238, 0.3);
+            animation: orbit-spin 6s linear infinite reverse;
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+        }
+
+        .orbit-3 {
+            border-color: rgba(236, 72, 153, 0.3);
+            animation: orbit-spin 4s linear infinite;
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+        }
+
+        @keyframes orbit-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .orbit-particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .orbit-particle-violet {
+            background: var(--accent-violet);
+            box-shadow: 0 0 10px var(--accent-violet);
+        }
+
+        .orbit-particle-pink {
+            background: var(--accent-pink);
+            box-shadow: 0 0 10px var(--accent-pink);
+        }
+
+        /* Circuit Lines Animation */
+        .circuit-lines {
+            width: 400px;
+            height: 200px;
+            margin: 2rem auto;
+            position: relative;
+            background: rgba(34, 211, 238, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .circuit-line {
+            stroke: var(--accent-cyan);
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 5px var(--accent-cyan));
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-line 3s ease-in-out infinite;
+        }
+
+        @keyframes draw-line {
+            0% { stroke-dashoffset: 1000; }
+            50% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -1000; }
+        }
+
+        .circuit-line:nth-child(2) {
+            stroke: var(--accent-violet);
+            animation-delay: 0.3s;
+        }
+
+        .circuit-line:nth-child(3) {
+            stroke: var(--accent-pink);
+            animation-delay: 0.6s;
+        }
+
+        .processing-text {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .processing-status {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+
+        .status-item {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--accent-violet);
+            padding: 1rem;
+            border-radius: 6px;
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(34, 211, 238, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
+        }
+
+        .status-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-family: 'Space Grotesk', monospace;
+        }
+
+        /* Data Stream */
+        .data-stream {
+            margin: 2rem 0;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            max-height: 100px;
+            overflow: hidden;
+        }
+
+        .stream-item {
+            animation: stream-move 20s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes stream-move {
+            0% { transform: translateY(0); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        .stream-item:nth-child(1) { animation-delay: 0s; }
+        .stream-item:nth-child(2) { animation-delay: 2s; }
+        .stream-item:nth-child(3) { animation-delay: 4s; }
+        .stream-item:nth-child(4) { animation-delay: 6s; }
+        .stream-item:nth-child(5) { animation-delay: 8s; }
+
+        .image-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .image-box {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-box-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-classical {
+            background: rgba(156, 163, 175, 0.2);
+            color: #D1D5DB;
+        }
+
+        .status-quantum-sim {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-violet);
+            box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .status-quantum-hw {
+            background: rgba(34, 211, 238, 0.2);
+            color: var(--accent-cyan);
+            box-shadow: inset 0 0 10px rgba(34, 211, 238, 0.3);
+        }
+
+        .image-content {
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 4px;
+            filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.3));
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .metrics-table th {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metrics-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .metrics-table tr:hover {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .metric-value-highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            text-shadow: 0 0 5px var(--accent-cyan);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 200px; }
+            .image-comparison { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; }
+            .content-area::before { left: 0; }
+        }
+
+        #imageUpload { display: none; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">⚛️ Quantum Vision Lab</div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="switchPage('overview', this)">📊 Overview</div>
+                <div class="nav-item" onclick="switchPage('lab', this)">🔬 Processing Lab</div>
+                <div class="nav-item" onclick="switchPage('comparison', this)">⚖️ Comparison</div>
+                <div class="nav-item" onclick="switchPage('experiments', this)">📈 Experiments</div>
+                <div class="nav-item" onclick="switchPage('quality', this)">🎨 Quality</div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div>Status: Running</div>
+                <div style="margin-top: 0.5rem;">Exp ID: QVL-001</div>
+                <div style="margin-top: 0.5rem;">v2.0 Sci-Fi</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Quantum Vision Lab / <span id="breadcrumb-page" style="color: var(--accent-cyan);">Overview</span></div>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Mode: <span style="color: var(--accent-violet); text-shadow: 0 0 10px var(--accent-violet);">█ LIVE SIMULATION</span></span>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                
+                <!-- Overview Page -->
+                <div id="overview" class="page-section active">
+                    <div class="page-header">
+                        <h1 class="page-title">⚛️ Quantum Vision Laboratory</h1>
+                        <p class="page-subtitle">Real-time quantum image processing with live circuit visualization and performance analytics.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button class="btn" onclick="startProcessing()">▶ Execute Experiment</button>
+                        <button class="btn" style="background: transparent; border: 1px solid var(--accent-violet); color: var(--accent-violet);">📖 Documentation</button>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-content">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">PSNR Quality</div>
+                                <div class="kpi-value">34.27</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">dB</div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-content">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">SSIM Index</div>
+                                <div class="kpi-value">0.892</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">Structural</div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-content">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">Execution</div>
+                                <div class="kpi-value">247</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">ms</div>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-content">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">Gates</div>
+                                <div class="kpi-value">48</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">Quantum</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Circuit Visualization -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem; color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan);">🔗 Quantum Circuit Visualization</h3>
+                        <canvas id="stateVisualization" width="600" height="250" style="border: 1px solid var(--border-color); border-radius: 6px; background: rgba(0,0,0,0.3);"></canvas>
+                        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                            <span style="display: inline-block; margin-right: 2rem;">Qubits: <span style="color: var(--accent-cyan); font-weight: 600;">8</span></span>
+                            <span style="display: inline-block; margin-right: 2rem;">Depth: <span style="color: var(--accent-violet); font-weight: 600;">12</span></span>
+                            <span style="display: inline-block;">Gates: <span style="color: var(--accent-pink); font-weight: 600;">48</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Lab -->
+                <div id="lab" class="page-section">
+                    <div class="page-header">
+                        <h1 class="page-title">🔬 Quantum Processing Laboratory</h1>
+                        <p class="page-subtitle">Upload images and run quantum encoding experiments with real-time visualization.</p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--accent-cyan);">Upload Image</h3>
+                        <div class="upload-area" onclick="document.getElementById('imageUpload').click()">
+                            <div class="upload-icon">📁</div>
+                            <p style="color: var(--text-primary);"><strong>Drag & drop or click to upload</strong></p>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">PNG, JPEG, WebP</p>
+                            <input type="file" id="imageUpload" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="startProcessing()" style="width: 100%; padding: 1rem; margin-bottom: 2rem; font-size: 1.1rem;">▶ START QUANTUM PROCESSING</button>
+
+                    <!-- Results -->
+                    <div id="resultsContainer" style="display: none;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--accent-cyan); font-size: 1.1rem;">📊 Processing Results</h3>
+
+                        <div class="image-comparison">
+                            <div class="image-box">
+                                <div class="image-box-header">
+                                    <span>Original Image</span>
+                                    <span class="status-badge status-classical">CLASSICAL</span>
+                                </div>
+                                <div class="image-content">
+                                    <canvas id="originalResultCanvas" width="350" height="280"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="image-box">
+                                <div class="image-box-header">
+                                    <span>Quantum Processed</span>
+                                    <span class="status-badge status-quantum-sim">QUANTUM SIMULATION</span>
+                                </div>
+                                <div class="image-content">
+                                    <canvas id="processedResultCanvas" width="350" height="280"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Performance Metrics</h4>
+                        <table class="metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PSNR</td>
+                                    <td class="metric-value-highlight">34.27</td>
+                                    <td>dB</td>
+                                    <td><span style="color: var(--accent-green);">✓ Excellent</span></td>
+                                </tr>
+                                <tr>
+                                    <td>SSIM</td>
+                                    <td class="metric-value-highlight">0.892</td>
+                                    <td>-</td>
+                                    <td><span style="color: var(--accent-green);">✓ High</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Execution Time</td>
+                                    <td class="metric-value-highlight">247.3</td>
+                                    <td>ms</td>
+                                    <td><span style="color: var(--text-secondary);">-</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Gates Used</td>
+                                    <td class="metric-value-highlight">48</td>
+                                    <td>gates</td>
+                                    <td><span style="color: var(--text-secondary);">-</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Comparison -->
+                <div id="comparison" class="page-section">
+                    <div class="page-header">
+                        <h1 class="page-title">⚖️ Classical vs Quantum</h1>
+                        <p class="page-subtitle">Side-by-side performance comparison.</p>
+                    </div>
+
+                    <div class="image-comparison" style="margin-top: 2rem;">
+                        <div class="image-box">
+                            <div class="image-box-header">
+                                <span>Classical Processing</span>
+                                <span class="status-badge status-classical">GAUSSIAN</span>
+                            </div>
+                            <div class="image-content">
+                                <canvas id="classicalCompCanvas" width="350" height="280"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="image-box">
+                            <div class="image-box-header">
+                                <span>Quantum Simulation</span>
+                                <span class="status-badge status-quantum-sim">FRQI ENCODING</span>
+                            </div>
+                            <div class="image-content">
+                                <canvas id="quantumCompCanvas" width="350" height="280"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experiments -->
+                <div id="experiments" class="page-section">
+                    <div class="page-header">
+                        <h1 class="page-title">📈 Benchmark Experiments</h1>
+                        <p class="page-subtitle">Track all experimental runs.</p>
+                    </div>
+
+                    <table class="metrics-table">
+                        <thead>
+                            <tr>
+                                <th>Exp ID</th>
+                                <th>Algorithm</th>
+                                <th>PSNR (dB)</th>
+                                <th>SSIM</th>
+                                <th>Time (ms)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QVL-001</td>
+                                <td>FRQI + Circuit</td>
+                                <td class="metric-value-highlight">34.27</td>
+                                <td class="metric-value-highlight">0.892</td>
+                                <td>247</td>
+                                <td><span style="color: var(--accent-green);">✓ Complete</span></td>
+                            </tr>
+                            <tr>
+                                <td>QVL-002</td>
+                                <td>Classical Gaussian</td>
+                                <td class="metric-value-highlight">32.15</td>
+                                <td class="metric-value-highlight">0.854</td>
+                                <td>125</td>
+                                <td><span style="color: var(--accent-green);">✓ Complete</span></td>
+                            </tr>
+                            <tr>
+                                <td>QVL-003</td>
+                                <td>NEQR Deep</td>
+                                <td class="metric-value-highlight">36.42</td>
+                                <td class="metric-value-highlight">0.912</td>
+                                <td>582</td>
+                                <td><span style="color: var(--accent-green);">✓ Complete</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quality Analysis -->
+                <div id="quality" class="page-section">
+                    <div class="page-header">
+                        <h1 class="page-title">🎨 Quality Analysis</h1>
+                        <p class="page-subtitle">Detailed quality metrics and error visualization.</p>
+                    </div>
+
+                    <table class="metrics-table">
+                        <thead>
+                            <tr>
+                                <th>Quality Metric</th>
+                                <th>Value</th>
+                                <th>Interpretation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PSNR</td>
+                                <td class="metric-value-highlight">34.27 dB</td>
+                                <td style="color: var(--accent-green);">Excellent quality</td>
+                            </tr>
+                            <tr>
+                                <td>SSIM</td>
+                                <td class="metric-value-highlight">0.892</td>
+                                <td style="color: var(--accent-green);">High similarity</td>
+                            </tr>
+                            <tr>
+                                <td>MSE</td>
+                                <td class="metric-value-highlight">144.5</td>
+                                <td style="color: var(--accent-green);">Low error</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sci-Fi Processing Overlay -->
+    <div class="processing-container" id="processingOverlay">
+        <div class="processing-content">
+            <!-- Quantum Orbit -->
+            <div class="quantum-orbit">
+                <div class="orbit orbit-1">
+                    <div class="orbit-particle"></div>
+                </div>
+                <div class="orbit orbit-2">
+                    <div class="orbit-particle orbit-particle-violet"></div>
+                </div>
+                <div class="orbit orbit-3">
+                    <div class="orbit-particle orbit-particle-pink"></div>
+                </div>
+            </div>
+
+            <!-- Circuit Lines -->
+            <div class="circuit-lines">
+                <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+                    <polyline class="circuit-line" points="20,50 80,50 80,100 140,100 140,50 200,50"/>
+                    <polyline class="circuit-line" points="30,150 90,150 90,100 150,100 150,150 210,150"/>
+                    <polyline class="circuit-line" points="220,80 280,80 280,120 340,120 340,80 380,80"/>
+                </svg>
+            </div>
+
+            <!-- Status -->
+            <div class="processing-text">EXECUTING QUANTUM CIRCUIT...</div>
+
+            <div class="processing-status">
+                <div class="status-item">
+                    <div class="status-label">Qubits</div>
+                    <div class="status-value" id="qubit-status">0/8</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Depth</div>
+                    <div class="status-value" id="depth-status">0/12</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Gates</div>
+                    <div class="status-value" id="gates-status">0/48</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Fidelity</div>
+                    <div class="status-value" id="fidelity-status">0%</div>
+                </div>
+            </div>
+
+            <!-- Data Stream -->
+            <div class="data-stream">
+                <div class="stream-item">→ Initializing quantum state |0⟩</div>
+                <div class="stream-item">→ Encoding image data into amplitude</div>
+                <div class="stream-item">→ Applying quantum gates and rotations</div>
+                <div class="stream-item">→ Measuring quantum superposition states</div>
+                <div class="stream-item">→ Reconstructing classical image from measurements</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchPage(page, element) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            const titles = {
+                'overview': 'Overview',
+                'lab': 'Processing Lab',
+                'comparison': 'Classical vs Quantum',
+                'experiments': 'Experiments',
+                'quality': 'Quality Analysis'
+            };
+            document.getElementById('breadcrumb-page').textContent = titles[page];
+        }
+
+        function startProcessing() {
+            const overlay = document.getElementById('processingOverlay');
+            overlay.classList.add('active');
+
+            // Animate status updates
+            let qubit = 0, depth = 0, gates = 0, fidelity = 0;
+            const interval = setInterval(() => {
+                qubit = Math.min(qubit + 1, 8);
+                depth = Math.min(depth + 1, 12);
+                gates = Math.min(gates + 4, 48);
+                fidelity = Math.min(fidelity + 5, 100);
+
+                document.getElementById('qubit-status').textContent = qubit + '/8';
+                document.getElementById('depth-status').textContent = depth + '/12';
+                document.getElementById('gates-status').textContent = gates + '/48';
+                document.getElementById('fidelity-status').textContent = fidelity + '%';
+
+                if (fidelity >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                        document.getElementById('resultsContainer').style.display = 'block';
+                        switchPage('lab', document.querySelector('.nav-item:nth-child(2)'));
+                        drawResultCanvases();
+                    }, 500);
+                }
+            }, 50);
+        }
+
+        function drawResultCanvases() {
+            const canvases = ['originalResultCanvas', 'processedResultCanvas', 'classicalCompCanvas', 'quantumCompCanvas'];
+            
+            canvases.forEach(canvasId => {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                
+                const ctx = canvas.getContext('2d');
+                const imageData = ctx.createImageData(canvas.width, canvas.height);
+                const data = imageData.data;
+
+                for (let i = 0; i < canvas.width * canvas.height; i++) {
+                    const x = i % canvas.width;
+                    const y = Math.floor(i / canvas.width);
+                    const idx = i * 4;
+                    
+                    const r = (Math.sin(x / 50) + 1) * 100 + Math.random() * 50;
+                    const g = (Math.cos(y / 50) + 1) * 100 + Math.random() * 50;
+                    const b = (Math.sin((x + y) / 50) + 1) * 100 + Math.random() * 50;
+                    
+                    data[idx] = Math.min(r, 255);
+                    data[idx + 1] = Math.min(g, 255);
+                    data[idx + 2] = Math.min(b, 255);
+                    data[idx + 3] = 255;
+                }
+                ctx.putImageData(imageData, 0, 0);
+            });
+        }
+
+        // Draw initial circuit visualization
+        function drawCircuit() {
+            const canvas = document.getElementById('stateVisualization');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.05)';
+            ctx.fillRect(0, 0, 600, 250);
+
+            // Draw qubit lines
+            for (let i = 0; i < 8; i++) {
+                const y = 30 + i * 25;
+                ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(20, y);
+                ctx.lineTo(580, y);
+                ctx.stroke();
+
+                // Add gate boxes
+                for (let x = 60; x < 580; x += 80) {
+                    ctx.strokeStyle = 'rgba(34, 211, 238, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x - 15, y - 8, 30, 16);
+                }
+            }
+        }
+
+        window.addEventListener('load', drawCircuit);
+    </script>
+</body>
+</html>

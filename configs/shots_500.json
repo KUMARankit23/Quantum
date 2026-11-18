@@ -1,0 +1,13 @@
+{
+  "image_type": "checkerboard",
+  "image_size": 4,
+  "intensity_representation": "normalized",
+  "encoding_method": "amplitude",
+  "circuit_type": "basic",
+  "shots": 500,
+  "noise_model": "none",
+  "noise_probability": 0.0,
+  "seed": 42,
+  "experiment_id": "shots_500",
+  "description": "Shots experiment: 500 shots"
+}

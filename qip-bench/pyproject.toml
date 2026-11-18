@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qipbench"
+version = "1.0.0"
+description = "Empirical framework for the performance factors of quantum image processing (FRQI, NEQR, QPIE, QHED)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "qiskit>=2.0,<3", "qiskit-aer>=0.17", "numpy>=1.26", "scipy>=1.11", "pandas>=2.1",
+  "scikit-image>=0.22", "opencv-python-headless>=4.8", "pillow>=10", "matplotlib>=3.8",
+  "psutil>=5.9", "fastapi>=0.110", "uvicorn>=0.27", "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+qipbench = "qipbench.cli:main"
+
+[tool.setuptools]
+packages = ["qipbench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

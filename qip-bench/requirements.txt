@@ -1,0 +1,22 @@
+# QIP-Bench — tested with Python 3.12 on Windows 11
+qiskit>=2.0,<3
+qiskit-aer>=0.17
+numpy>=1.26
+scipy>=1.11
+pandas>=2.1
+scikit-image>=0.22
+opencv-python-headless>=4.8
+pillow>=10
+matplotlib>=3.8
+psutil>=5.9
+fastapi>=0.110
+uvicorn>=0.27
+python-multipart>=0.0.9
+
+# notebooks and tests
+jupyter>=1.0
+nbformat>=5.9
+ipywidgets>=8
+plotly>=5.18
+pylatexenc>=2.10
+pytest>=8

@@ -1,0 +1,122 @@
+FINAL PRE-EVALUATION CHECKLIST
+
+WEDNESDAY (Night Before)
+- [ ] All group members have code on their systems
+- [ ] Everyone can run: python main.py --test
+- [ ] Everyone can access dashboard: npm run dev
+- [ ] Everyone has read EVALUATION_AUDIT.md
+- [ ] Each member prepared 2-3 points per criterion
+- [ ] Team meeting: 1 hour discussion of potential questions
+
+THURSDAY MORNING
+- [ ] Everyone well-rested
+- [ ] Professional clothing/appearance
+- [ ] All devices fully charged
+- [ ] Test environment ready
+
+12:20 PM (10 minutes before)
+- [ ] Log into video call / join room
+- [ ] Have projector/screen sharing ready
+- [ ] Open terminal with code accessible
+- [ ] Dashboard running on localhost:3000
+- [ ] Confidence check: Everyone knows their part
+
+12:30 PM - START PRESENTATION
+
+Opening (1 min)
+- [ ] Friendly greeting
+- [ ] Brief introduction
+- [ ] Confidence in voice
+- [ ] Project overview
+
+Criterion 1: Problem (2 min)
+- [ ] Clear research question stated
+- [ ] Sub-questions explained
+- [ ] Motivation clarified
+- [ ] Quantum relevance shown
+
+Criterion 2: Formulation (2 min)
+- [ ] Amplitude encoding formula shown
+- [ ] Qubit requirement explained
+- [ ] Circuit design described
+- [ ] Gates and operations listed
+
+Criterion 3: Methodology (2 min)
+- [ ] Framework (Qiskit) explained
+- [ ] 22 modules overview
+- [ ] Pipeline described
+- [ ] Testing mentioned
+
+Criterion 4: Experiments (2 min)
+- [ ] 6 experiments described
+- [ ] Metrics explained (8+)
+- [ ] Baselines mentioned
+- [ ] Data scale noted (128 images)
+
+Criterion 5: Results (2 min)
+- [ ] Key findings stated
+- [ ] Charts shown
+- [ ] Comparisons made
+- [ ] Conclusions honest
+
+Criterion 6: Analysis (1 min)
+- [ ] Current limitations explained
+- [ ] Future potential discussed
+- [ ] Computational bounds stated
+- [ ] Understanding demonstrated
+
+Criterion 7: Limitations (1 min)
+- [ ] Failure cases identified
+- [ ] Noise constraints explained
+- [ ] Mitigation strategies mentioned
+- [ ] Error sources acknowledged
+
+Q&A (5-8 min)
+- [ ] Any member can answer
+- [ ] Refer to evidence
+- [ ] Admit unknown if needed
+- [ ] Defend with data
+
+===== KEY TALKING POINTS =====
+
+If Asked: "Why Quantum?"
+Answer: "Superposition allows parallel feature processing. Amplitude encoding preserves image structure in quantum states. Future potential with larger problems and error correction."
+
+If Asked: "Did Quantum Win?"
+Answer: "No, classical is 10-100x faster at this scale. This shows honest research. At larger scale with error correction, quantum could provide advantages."
+
+If Asked: "What's the Main Problem?"
+Answer: "Quantum hardware is noisy (0.1-1% errors) and simulation overhead dominates at small scale. Both issues improve with better hardware and error correction."
+
+If Asked about Limitations:
+Answer: "We identified zero-pixel encoding issues, noise collapse at extreme levels, scalability at >8 qubits, and measurement destroys state. We have mitigation strategies for each."
+
+If Unsure:
+Answer: "That's a great question. Let me think... Based on our analysis in [document], we believe..."
+
+===== EMERGENCY RESPONSES =====
+
+Code Doesn't Run:
+"We have a mock simulator fallback that works without Qiskit."
+
+Dashboard Doesn't Load:
+"Let me restart... Should be up in a moment."
+
+Member Gets Stuck:
+[Other members]: "Let me add to that..."
+
+===== FINAL CONFIDENCE CHECK =====
+
+Before 12:30 PM, answer these:
+- [ ] What is our main research question?
+- [ ] How does amplitude encoding work?
+- [ ] How many qubits for 8x8?
+- [ ] What are our 6 experiments?
+- [ ] What's our main finding?
+- [ ] Why doesn't quantum win?
+- [ ] What could make quantum win?
+- [ ] What's our biggest limitation?
+
+If YES to all --> You're ready!
+
+GOOD LUCK! You've got this!

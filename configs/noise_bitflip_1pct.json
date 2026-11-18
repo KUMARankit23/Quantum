@@ -1,0 +1,13 @@
+{
+  "image_type": "checkerboard",
+  "image_size": 4,
+  "intensity_representation": "normalized",
+  "encoding_method": "amplitude",
+  "circuit_type": "basic",
+  "shots": 1000,
+  "noise_model": "bitflip",
+  "noise_probability": 0.01,
+  "seed": 42,
+  "experiment_id": "noise_bitflip_1pct",
+  "description": "Noise experiment: 1% bit-flip"
+}
